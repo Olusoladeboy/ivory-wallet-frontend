@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const { Title, Text } = Typography;
 
 export const Signup: React.FC = () => {
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
   const onFinish = (values: { [key: string]: string }) => {

@@ -3,7 +3,7 @@ import { Layout } from "antd";
 import { Outlet } from "react-router";
 import { Sidebar, Header as IHeader } from "..";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 export const LayoutPage: React.FC = () => {
   return (

@@ -100,7 +100,7 @@ const data: DataType[] = [
 export const Transfer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: Record<string, string>) => {
     console.log(values);
     setLoading(true);
   };
