@@ -1,4 +1,4 @@
-import { Card, Col, Row, Table, Typography, Tag, Space } from "antd";
+import { Card, Col, Row, Table, Typography, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { currencyFormatter } from "../../utils";
 import { DataType } from "../../interfaces";

@@ -8,7 +8,6 @@ import {
   Col,
   Table,
   Tag,
-  Space,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
@@ -65,7 +64,7 @@ export const Withdraw: React.FC = () => {
     console.log(values);
     setLoading(true);
     try {
-      const response: any = await apiRequest({
+      await apiRequest({
         url: "/transactions/withdrawal",
         method: "POST",
         data: values,

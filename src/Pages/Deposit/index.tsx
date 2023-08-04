@@ -8,7 +8,6 @@ import {
   Col,
   Table,
   Tag,
-  Space,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -17,7 +16,6 @@ import { useForm } from "antd/es/form/Form";
 import type { ColumnsType } from "antd/es/table";
 import { DataType } from "../../interfaces";
 import apiRequest from "../../services/api.service";
-import { Storage, StorageKeys } from "../../utils";
 
 const { Title } = Typography;
 const { Item } = Form;
@@ -67,7 +65,7 @@ export const Deposit: React.FC = () => {
     console.log(values);
     setLoading(true);
     try {
-      const response: any = await apiRequest({
+      await apiRequest({
         url: "/transactions/deposit",
         method: "POST",
         data: values,

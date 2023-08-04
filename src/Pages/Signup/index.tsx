@@ -1,7 +1,6 @@
 import { Button, Card, Form, Input, Typography, Row, Col } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Storage, StorageKeys } from "../../utils";
 import apiRequest from "../../services/api.service";
 import { toast } from "react-toastify";
 
@@ -19,7 +18,7 @@ export const Signup: React.FC = () => {
     console.log("Success:", values);
     setLoading(!loading);
     try {
-      const response: any = await apiRequest({
+      await apiRequest({
         url: `/user/register?token=${token}`,
         method: "POST",
         data: values,
