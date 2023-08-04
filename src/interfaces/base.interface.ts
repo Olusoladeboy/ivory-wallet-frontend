@@ -3,9 +3,13 @@ export interface IError extends Error {
 }
 
 export interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
+    id?: number;
+    userId: number;
+    userToId: number;
+    amount: number;
+    bank: string;
+    accountNumber: string;
+    reference: string;
+    type: string;
+    status: string;
 }

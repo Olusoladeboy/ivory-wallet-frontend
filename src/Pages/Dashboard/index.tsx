@@ -2,83 +2,80 @@ import { Card, Col, Row, Table, Typography, Tag, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { currencyFormatter } from "../../utils";
 import { DataType } from "../../interfaces";
+import { useEffect, useState } from "react";
+import apiRequest from "../../services/api.service";
 
 const { Text } = Typography;
 
 const columns: ColumnsType<DataType> = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
     render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Type",
+    dataIndex: "type",
+    key: "type",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "Amount",
+    dataIndex: "amount",
+    key: "amount",
   },
   {
-    title: "Tags",
-    key: "tags",
-    dataIndex: "tags",
-    render: (_, { tags }) => (
+    title: "Reference",
+    dataIndex: "reference",
+    key: "reference",
+  },
+  {
+    title: "Status",
+    key: "status",
+    dataIndex: "status",
+    render: (_, { status }) => (
       <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? "geekblue" : "green";
-          if (tag === "loser") {
-            color = "volcano";
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
+        <Tag color={status === "successful" ? "green" : "red"} key={status}>
+          {status.toUpperCase()}
+        </Tag>
       </>
     ),
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
   },
 ];
 
 export const Dashboard: React.FC = () => {
+  const [balance, setBalance] = useState(0);
+  const [transactions, setTransactions] = useState([]);
+
+  const getBalance = async () => {
+    const response = await apiRequest({
+      url: "/wallet/me",
+      method: "GET",
+    });
+
+    if (response.success) {
+      setBalance(response.payload[0].balance);
+    }
+  };
+
+  const getAllTransactions = async () => {
+    const response = await apiRequest({
+      url: "/transactions/me",
+      method: "GET",
+    });
+
+    if (response.success) {
+      setTransactions(response.payload);
+    }
+
+    console.log(response);
+  };
+
+  useEffect(() => {
+    getBalance();
+    getAllTransactions();
+  }, []);
+
   return (
     <>
       <div>
@@ -87,7 +84,7 @@ export const Dashboard: React.FC = () => {
             <Col span={8}>
               <Card title="Wallet Balance" bordered={false}>
                 <div className="text-end">
-                  <Text>{currencyFormatter("NGN", 1000)}</Text>
+                  <Text>{currencyFormatter("NGN", balance)}</Text>
                 </div>
               </Card>
             </Col>
@@ -101,7 +98,7 @@ export const Dashboard: React.FC = () => {
             <Col span={8}></Col>
           </Row>
           <Card title="All Transactions" className="mt-10">
-            <Table size="large" columns={columns} dataSource={data} />
+            <Table size="large" columns={columns} dataSource={transactions} />
           </Card>
         </Typography>
       </div>

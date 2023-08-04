@@ -10,100 +10,96 @@ import {
   Tag,
   Space,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { DataType } from "../../interfaces";
+import { toast } from "react-toastify";
+import { useForm } from "antd/es/form/Form";
+import apiRequest from "../../services/api.service";
 
 const { Title } = Typography;
 const { Item } = Form;
 
 const columns: ColumnsType<DataType> = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
     render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Type",
+    dataIndex: "type",
+    key: "type",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "Amount",
+    dataIndex: "amount",
+    key: "amount",
   },
   {
-    title: "Tags",
-    key: "tags",
-    dataIndex: "tags",
-    render: (_, { tags }) => (
+    title: "Reference",
+    dataIndex: "reference",
+    key: "reference",
+  },
+  {
+    title: "Status",
+    key: "status",
+    dataIndex: "status",
+    render: (_, { status }) => (
       <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? "geekblue" : "green";
-          if (tag === "loser") {
-            color = "volcano";
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
+        <Tag color={status === "successful" ? "green" : "red"} key={status}>
+          {status.toUpperCase()}
+        </Tag>
       </>
     ),
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-  {
-    key: "4",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
   },
 ];
 
 export const Withdraw: React.FC = () => {
+  const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState([]);
 
-  const onFinish = (values: Record<string, string>) => {
+  const onFinish = async (values: Record<string, string>) => {
     console.log(values);
     setLoading(true);
+    try {
+      const response: any = await apiRequest({
+        url: "/transactions/withdrawal",
+        method: "POST",
+        data: values,
+      });
+
+      toast("Successful", { type: "success" });
+
+      form.resetFields();
+
+      await getDepositTransactions();
+    } catch (error) {
+      console.error(error);
+      toast(error.message, { type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const getDepositTransactions = async () => {
+    const response = await apiRequest({
+      url: "/transactions/me?type=withdrawal",
+      method: "GET",
+    });
+
+    if (response.success) {
+      setTransactions(response.payload);
+    }
+
+    console.log(response);
+  };
+
+  useEffect(() => {
+    getDepositTransactions();
+  }, []);
 
   return (
     <>
@@ -145,7 +141,7 @@ export const Withdraw: React.FC = () => {
           </div>
         </Card>
         <Card title="Recent Withdrawal Transactions" className="mt-10">
-          <Table size="large" columns={columns} dataSource={data} />
+          <Table size="large" columns={columns} dataSource={transactions} />
         </Card>
       </Typography>
     </>

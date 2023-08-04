@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout } from "antd";
-import { Outlet } from "react-router";
-import { Sidebar, Header as IHeader } from "..";
+import { Outlet } from "react-router-dom";
+import { Sidebar, Header as IHeader, Protected } from "..";
 
 const { Header, Sider, Content } = Layout;
 
@@ -17,7 +17,9 @@ export const LayoutPage: React.FC = () => {
             <IHeader></IHeader>
           </Header>
           <Content className="bg-[#ececec] p-20">
-            <Outlet />
+            <Protected>
+              <Outlet />
+            </Protected>
           </Content>
           {/* <Footer className="bg-[#FFF]">Footer</Footer> */}
         </Layout>

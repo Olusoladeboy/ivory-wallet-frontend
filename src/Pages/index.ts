@@ -8,3 +8,4 @@ export * from './Transfer';
 export * from './Profile';
 export * from './Sidebar';
 export * from './Header';
+export * from './Protected';
